@@ -1,3 +1,4 @@
+// SPDX-License-Identifier: MIT
 pragma solidity ^0.5.0;
 
 import "./DappToken.sol";
@@ -61,7 +62,7 @@ contract TokenFarm {
 
 	/* Issuing Tokens: Earning interest which is issuing tokens for people who stake them.
 
-	Core Thing: Distribute DApp tokens as interes and also allow the investor to unstake their tokens
+	Core Thing: Distribute DApp tokens as interest and also allow the investor to unstake their tokens
 	from the app so give them interest using the app. */
 	function issueTokens() public {
 		// only owner can call this function
@@ -71,10 +72,25 @@ contract TokenFarm {
 		for (uint i=0; i<stakers.length; i++) {
 			address recipient = stakers[i];
 			uint balance = stakingBalance[recipient];
+			uint reward = (1/100)* balance;
 			if(balance > 0) {
-				dappToken.transfer(recipient, balance);
+				dappToken.transfer(recipient, reward);
 			}			
 		}
+	}
+
+	function requestReward() public {
+		// only stake holders owner can call this function
+		uint i = stakers.indexOf(msg.sender);
+		require(i !== -1 , "caller must be a stake holder");
+
+			address recipient = stakers[i];
+			uint balance = stakingBalance[recipient];
+			uint reward = (1/100)* balance;
+			if(balance > 0) {
+				dappToken.transfer(recipient, reward);
+			}			
+		
 	}
 
 }
